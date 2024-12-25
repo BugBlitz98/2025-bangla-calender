@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="২০২৫ সালের ক্যালেন্ডার বিনামূল্যে ডাউনলোড করুন PDF ফরম্যাটে! সমস্ত ছুটির তালিকাসহ।">
+  <meta name="keywords" content="২০২৫ ক্যালেন্ডার, ২০২৫ পিডিএফ ক্যালেন্ডার ডাউনলোড, ২০২৫ ছুটির তালিকা">
+  <meta name="author" content="Your Name">
+  <title>২০২৫ ক্যালেন্ডার | PDF ফরম্যাটে ডাউনলোড</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- Header Section -->
+  <header class="bg-blue-600 text-white py-6 text-center shadow-md">
+    <h1 class="text-4xl font-bold">২০২৫ সালের ক্যালেন্ডার</h1>
+    <p class="mt-2 text-lg">বিনামূল্যে PDF ফরম্যাটে ডাউনলোড করুন</p>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container mx-auto my-10 px-4">
+    <!-- Calendar Section -->
+    <div id="calendar" class="bg-white rounded-lg shadow-md p-6">
+      <h3 class="text-xl font-bold mb-4 text-center">২০২৫ সালের ছুটির তালিকাসহ ক্যালেন্ডার</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Calendar months rendered by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Download Section -->
+    <div class="text-center mt-10">
+      <button 
+        class="px-6 py-3 text-lg font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:shadow-lg hover:bg-blue-700 transition"
+        onclick="downloadPDF()"
+      >
+        PDF ফরম্যাটে ক্যালেন্ডার ডাউনলোড করুন
+      </button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-6 text-center">
+    <p>&copy; ২০২৫ Your Name. সর্বস্বত্ব সংরক্ষিত।</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    const holidays = {
+      0: [{ date: ২৬, name: "গণতন্ত্র দিবস" }], // জানুয়ারি
+      ২: [{ date: ৮, name: "দোল উৎসব" }], // মার্চ
+      ৪: [{ date: ১, name: "শ্রমিক দিবস" }], // মে
+      ৯: [{ date: ২, name: "গান্ধী জয়ন্তী" }], // অক্টোবর
+      ১০: [{ date: ১৪, name: "দীপাবলি" }], // নভেম্বর
+    };
+
+    const months = [
+      "জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", 
+      "মে", "জুন", "জুলাই", "অগাস্ট", 
+      "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"
+    ];
+    const days = ["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহস্পতি", "শুক্র", "শনিবার"];
+
+    function renderCalendar() {
+      const container = document.querySelector(".grid");
+      container.innerHTML = ""; // Clear previous content
+      months.forEach((month, index) => {
+        const monthDiv = document.createElement("div");
+        monthDiv.classList.add("border", "rounded-lg", "bg-gradient-to-b", "from-indigo-50", "to-white", "p-4", "shadow-sm");
+
+        const daysHTML = generateDays(২০২৫, index, holidays[index]);
+        monthDiv.innerHTML = `
+          <h4 class="text-lg font-semibold text-gray-800 text-center mb-2">${month}</h4>
+          <div class="grid grid-cols-7 text-center text-sm font-bold text-gray-600">
+            ${days.map(day => `<div>${day}</div>`).join("")}
+          </div>
+          <div class="grid grid-cols-7 text-center text-sm mt-2 gap-1 text-gray-700">
+            ${daysHTML}
+          </div>
+        `;
+        container.appendChild(monthDiv);
+      });
+    }
+
+    function generateDays(year, month, monthHolidays = []) {
+      const date = new Date(year, month, 1);
+      let daysHTML = "";
+
+      for (let i = 0; i < date.getDay(); i++) {
+        daysHTML += `<div></div>`;
+      }
+
+      while (date.getMonth() === month) {
+        const isHoliday = monthHolidays?.some(holiday => holiday.date === date.getDate());
+        const holidayName = monthHolidays?.find(holiday => holiday.date === date.getDate())?.name || "";
+
+        daysHTML += `
+          <div class="py-1 px-2 rounded-full ${
+            isHoliday ? "bg-red-300 text-red-800 font-bold" : "bg-blue-100 hover:bg-blue-200"
+          } cursor-pointer">
+            ${date.getDate()}
+            ${holidayName ? `<div class="text-xs text-center text-red-500 mt-1">${holidayName}</div>` : ""}
+          </div>`;
+        date.setDate(date.getDate() + 1);
+      }
+
+      return daysHTML;
+    }
+
+    document.addEventListener("DOMContentLoaded", renderCalendar);
+
+    function downloadPDF() {
+      const element = document.getElementById("calendar");
+      const options = {
+        margin: 0.5,
+        filename: '২০২৫-বাংলা-ক্যালেন্ডার.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+      html2pdf().set(options).from(element).save();
+    }
+  </script>
+</body>
+</html>
